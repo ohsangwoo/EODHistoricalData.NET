@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EODHistoricalData.NET
 {
@@ -18,6 +19,13 @@ namespace EODHistoricalData.NET
             string dateParameters = Utils.GetDateParametersAsString(startDate, endDate);
             return ExecuteQuery(string.Format(HistoricalDataUrl, symbol, _apiToken, dateParameters), GetHistoricalPricesFromResponse);
         }
+
+        internal async Task<List<HistoricalPrice>> GetHistoricalPricesAsync(string symbol, DateTime? startDate, DateTime? endDate)
+        {
+            string dateParameters = Utils.GetDateParametersAsString(startDate, endDate);
+            return await ExecuteQueryAsync(string.Format(HistoricalDataUrl, symbol, _apiToken, dateParameters), GetHistoricalPricesFromResponse);
+        }
+
 
         List<HistoricalPrice> GetHistoricalPricesFromResponse(HttpResponseMessage response)
         {

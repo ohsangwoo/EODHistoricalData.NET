@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace EODHistoricalData.NET
 {
@@ -25,6 +26,14 @@ namespace EODHistoricalData.NET
         protected T ExecuteQuery<T>(string uri, QueryHandler<T> handler)
         {
             HttpResponseMessage response = _httpClient.GetAsync(uri).Result;
+            if (response.IsSuccessStatusCode)
+                return handler(response);
+            throw new HttpRequestException($"There was an error while executing the HTTP query. Reason: {response.ReasonPhrase}");
+        }
+
+        protected async Task<T> ExecuteQueryAsync<T>(string uri, QueryHandler<T> handler)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(uri);
             if (response.IsSuccessStatusCode)
                 return handler(response);
             throw new HttpRequestException($"There was an error while executing the HTTP query. Reason: {response.ReasonPhrase}");

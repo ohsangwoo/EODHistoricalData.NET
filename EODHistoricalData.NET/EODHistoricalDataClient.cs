@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EODHistoricalData.NET
 {
@@ -30,6 +31,17 @@ namespace EODHistoricalData.NET
                 _stockPriceDataClient = new StockPriceDataClient(_apiToken, _useProxy);
 
             return _stockPriceDataClient.GetHistoricalPrices(symbol, startDate, endDate);
+        }
+
+        public async Task<List<HistoricalPrice>> GetHistoricalPricesAsync(string symbol, DateTime? startDate, DateTime? endDate)
+        {
+            if (symbol == null)
+                throw new ArgumentNullException("Symbol is null, cannot query prices.");
+
+            if (_stockPriceDataClient == null)
+                _stockPriceDataClient = new StockPriceDataClient(_apiToken, _useProxy);
+
+            return await _stockPriceDataClient.GetHistoricalPricesAsync(symbol, startDate, endDate);
         }
 
         public RealTimePrice GetRealTimePrice(string symbol)
